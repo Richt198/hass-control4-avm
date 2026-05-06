@@ -1,0 +1,24 @@
+set_route:
+  name: Set route
+  description: Route an input to an output on the AVM matrix.
+  fields:
+    output:
+      name: Output
+      description: Output number (1-16)
+      required: true
+      example: 3
+      selector:
+        number:
+          min: 1
+          max: 16
+          mode: box
+    input:
+      name: Input
+      description: Input number (1-16, or 0 to disconnect)
+      required: true
+      example: 5
+      selector:
+        number:
+          min: 0
+          max: 16
+          mode: box

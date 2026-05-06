@@ -1,0 +1,6 @@
+{
+  "name": "Control4 AVM-16S1-B Audio Matrix",
+  "render_readme": true,
+  "homeassistant": "2024.1.0",
+  "hacs": "1.32.0"
+}

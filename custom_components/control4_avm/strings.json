@@ -1,0 +1,37 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Control4 AVM-16S1-B",
+        "description": "Enter the IP address of the AVM-16S1-B audio matrix.",
+        "data": {
+          "host": "Host / IP address",
+          "port": "UDP port"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Couldn't reach the AVM. Check IP and that UDP/8750 is reachable."
+    },
+    "abort": {
+      "already_configured": "This AVM is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Control4 AVM options",
+        "data": {
+          "output_count": "Number of outputs",
+          "poll_interval": "State poll interval (seconds)"
+        }
+      }
+    }
+  },
+  "services": {
+    "set_route": {
+      "name": "Set route",
+      "description": "Route an input to an output."
+    }
+  }
+}

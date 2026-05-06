@@ -1,0 +1,13 @@
+{
+  "domain": "control4_avm",
+  "name": "Control4 AVM-16S1-B Audio Matrix",
+  "version": "0.2.0",
+  "config_flow": true,
+  "documentation": "https://github.com/yourname/control4_avm",
+  "issue_tracker": "https://github.com/yourname/control4_avm/issues",
+  "iot_class": "local_polling",
+  "integration_type": "device",
+  "codeowners": [],
+  "dependencies": [],
+  "requirements": []
+}
