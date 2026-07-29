@@ -14,6 +14,7 @@ The official Control4 integration requires a dealer-provisioned cloud account an
 
 - **`media_player` per output (×16)** — source, volume, mute; bass/treble/balance exposed as state attributes.
 - **`select` per output (×16)** — bare dropdown if you just want routing.
+- **Named inputs** — give the matrix inputs real names ("Sonos", "TV", …) during setup and they become the source lists everywhere.
 - **`number` sliders per output (×48)** — bass, treble, balance with the device's verified ranges.
 - **`control4_avm.set_route` service** — `{output: 3, input: 5}` for scripts and automations.
 - **Local-polling only** — direct UDP to port 8750, no internet egress.
@@ -35,7 +36,7 @@ The official Control4 integration requires a dealer-provisioned cloud account an
 2. Repository URL: `https://github.com/<your-user>/<this-repo>` · Category: **Integration**.
 3. Install **Control4 AVM-16S1-B Audio Matrix**.
 4. **Settings → System → Restart Home Assistant**.
-5. **Settings → Devices & Services → Add Integration → "Control4 AVM-16S1-B"** → enter the matrix's IP.
+5. **Settings → Devices & Services → Add Integration → "Control4 AVM-16S1-B"** → enter the matrix's IP and, optionally, names for its inputs.
 
 ### Manual
 
@@ -90,6 +91,24 @@ After install, **Configure** the integration to tweak:
 |---|---|---|
 | Number of outputs | 16 | Reduce if your unit is the 8-output variant. |
 | Poll interval (seconds) | 10 | Lower = snappier UI but more UDP traffic. The full state takes ~1.5s to fetch, so don't go below 3s. |
+| Input names | *(empty)* | Comma-separated names for the inputs, in order — also asked during setup. See below. |
+
+### Naming inputs
+
+You can pass a list of input names when setting up the device (and change it later under
+**Configure**). Names are comma-separated and positional: the first name is input 1, the
+second is input 2, and so on.
+
+```text
+Sonos, Apple TV, Turntable, , Echo
+```
+
+- Named inputs replace `Input N` in every `media_player` source list and `select` dropdown.
+- **Only the listed inputs are offered** — with the example above, outputs offer 5 sources
+  (plus *Disconnected*). Leave the field empty to offer all 16 as `Input 1…16`.
+- A blank slot (like the 4th above) keeps its default `Input 4` label.
+- The `Input N` form is still accepted by `media_player.select_source`, so old automations
+  keep working after a rename. The numeric `control4_avm.set_route` service is unaffected.
 
 ## Wire protocol (for the curious / for porting)
 

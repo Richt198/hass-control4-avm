@@ -6,7 +6,11 @@
         "description": "Enter the IP address of the AVM-16S1-B audio matrix.",
         "data": {
           "host": "Host / IP address",
-          "port": "UDP port"
+          "port": "UDP port",
+          "input_names": "Input names (optional)"
+        },
+        "data_description": {
+          "input_names": "Comma-separated, in input order — e.g. 'Sonos, TV, Turntable' names inputs 1–3. Listed inputs become the selectable sources; leave empty to offer all 16 as Input 1–16."
         }
       }
     },
@@ -23,7 +27,11 @@
         "title": "Control4 AVM options",
         "data": {
           "output_count": "Number of outputs",
-          "poll_interval": "State poll interval (seconds)"
+          "poll_interval": "State poll interval (seconds)",
+          "input_names": "Input names (optional)"
+        },
+        "data_description": {
+          "input_names": "Comma-separated, in input order — e.g. 'Sonos, TV, Turntable' names inputs 1–3. Listed inputs become the selectable sources; leave empty to offer all 16 as Input 1–16."
         }
       }
     }

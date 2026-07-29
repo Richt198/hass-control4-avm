@@ -13,6 +13,7 @@ from homeassistant.data_entry_flow import FlowResult
 
 from .avm_client import Avm16Client, AvmError
 from .const import (
+    CONF_INPUT_NAMES,
     CONF_OUTPUT_COUNT,
     CONF_POLL_INTERVAL,
     DEFAULT_OUTPUT_COUNT,
@@ -54,7 +55,11 @@ class AvmConfigFlow(ConfigFlow, domain=DOMAIN):
             else:
                 return self.async_create_entry(
                     title=f"AVM-16S1-B ({host})",
-                    data={CONF_HOST: host, CONF_PORT: port},
+                    data={
+                        CONF_HOST: host,
+                        CONF_PORT: port,
+                        CONF_INPUT_NAMES: user_input.get(CONF_INPUT_NAMES, ""),
+                    },
                 )
 
         return self.async_show_form(
@@ -63,6 +68,7 @@ class AvmConfigFlow(ConfigFlow, domain=DOMAIN):
                 {
                     vol.Required(CONF_HOST): str,
                     vol.Optional(CONF_PORT, default=DEFAULT_PORT): int,
+                    vol.Optional(CONF_INPUT_NAMES, default=""): str,
                 }
             ),
             errors=errors,
@@ -94,6 +100,13 @@ class AvmOptionsFlow(OptionsFlow):
                         CONF_POLL_INTERVAL,
                         default=opts.get(CONF_POLL_INTERVAL, DEFAULT_POLL_INTERVAL),
                     ): vol.All(int, vol.Range(min=2, max=300)),
+                    vol.Optional(
+                        CONF_INPUT_NAMES,
+                        default=opts.get(
+                            CONF_INPUT_NAMES,
+                            self.entry.data.get(CONF_INPUT_NAMES, ""),
+                        ),
+                    ): str,
                 }
             ),
         )

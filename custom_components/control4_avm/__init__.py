@@ -14,6 +14,7 @@ from .avm_client import Avm16Client, AvmError
 from .const import (
     ATTR_INPUT,
     ATTR_OUTPUT,
+    CONF_INPUT_NAMES,
     CONF_OUTPUT_COUNT,
     CONF_POLL_INTERVAL,
     DEFAULT_OUTPUT_COUNT,
@@ -41,6 +42,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     port = entry.data.get(CONF_PORT, DEFAULT_PORT)
     output_count = entry.options.get(CONF_OUTPUT_COUNT, DEFAULT_OUTPUT_COUNT)
     poll_interval = entry.options.get(CONF_POLL_INTERVAL, DEFAULT_POLL_INTERVAL)
+    input_names = entry.options.get(
+        CONF_INPUT_NAMES, entry.data.get(CONF_INPUT_NAMES, "")
+    )
 
     client = Avm16Client(host, port)
     try:
@@ -49,7 +53,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         _LOGGER.error("Could not open UDP endpoint to %s:%s: %s", host, port, err)
         return False
 
-    coordinator = AvmCoordinator(hass, entry, client, output_count, poll_interval)
+    coordinator = AvmCoordinator(
+        hass, entry, client, output_count, poll_interval, input_names
+    )
     await coordinator.async_config_entry_first_refresh()
 
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
