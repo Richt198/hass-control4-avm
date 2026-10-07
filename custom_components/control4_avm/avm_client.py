@@ -11,7 +11,8 @@ Wire protocol (verified by packet capture and probing on a real device):
                 code "000" = OK, "v01" = value out of range, "n01" = unknown command
     Numbers   : 2-digit lowercase hex
                 outputs/inputs 1..16 = 01..10; input 00 means "disconnected"
-                volume  0..25  (0x00..0x19)  - default for unused outputs is 21
+                volume  0..25  (0x00..0x19) on AVM-16S1-B,
+                        0..100 (0x00..0x64) on C4-16ZAMSV3-B
                 bass    0..12  (0x00..0x0c)  - center 6
                 treble  0..12  (0x00..0x0c)  - center 6
                 balance 0..50  (0x00..0x32)  - center 25 (0=left, 50=right)
@@ -176,7 +177,8 @@ class Avm16Client:
 
     async def set_volume(self, output: int, level: int) -> None:
         self._validate_output(output)
-        self._validate_range(level, 0, 25, "volume")
+        # Widest known scale; the model-specific limit is applied by callers.
+        self._validate_range(level, 0, 100, "volume")
         await self._request("s", "c4.asw.vol", self._hex(output), self._hex(level))
 
     async def get_mute(self, output: int) -> bool:

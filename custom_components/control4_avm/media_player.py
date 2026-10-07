@@ -16,7 +16,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .avm_client import Avm16Client
-from .const import DEFAULT_INPUT_COUNT, DISCONNECTED_LABEL, DOMAIN, VOL_MAX, VOL_MIN
+from .const import DEFAULT_INPUT_COUNT, DISCONNECTED_LABEL, DOMAIN, VOL_MAX_LEGACY, VOL_MIN
 from .coordinator import AvmCoordinator
 
 _LOGGER = logging.getLogger(__name__)
@@ -67,6 +67,15 @@ class AvmZone(CoordinatorEntity[AvmCoordinator], MediaPlayerEntity):
             model="AVM-16S1-B",
         )
 
+    @property
+    def _vol_max(self) -> int:
+        return self.coordinator.volume_max
+
+    @property
+    def _vol_step(self) -> int:
+        # Keep each step at roughly 4% whatever the scale (1 of 25, 4 of 100).
+        return max(1, round(self._vol_max / VOL_MAX_LEGACY))
+
     def _state(self) -> dict | None:
         if self.coordinator.data is None:
             return None
@@ -91,7 +100,7 @@ class AvmZone(CoordinatorEntity[AvmCoordinator], MediaPlayerEntity):
         st = self._state()
         if st is None or st.get("volume") is None:
             return None
-        return st["volume"] / VOL_MAX
+        return min(1.0, st["volume"] / self._vol_max)
 
     @property
     def is_volume_muted(self) -> bool | None:
@@ -109,7 +118,7 @@ class AvmZone(CoordinatorEntity[AvmCoordinator], MediaPlayerEntity):
         await self.coordinator.async_request_refresh()
 
     async def async_set_volume_level(self, volume: float) -> None:
-        level = max(VOL_MIN, min(VOL_MAX, round(volume * VOL_MAX)))
+        level = max(VOL_MIN, min(self._vol_max, round(volume * self._vol_max)))
         await self._client.set_volume(self._output, level)
         await self.coordinator.async_request_refresh()
 
@@ -121,14 +130,14 @@ class AvmZone(CoordinatorEntity[AvmCoordinator], MediaPlayerEntity):
         st = self._state()
         if not st or st.get("volume") is None:
             return
-        await self._client.set_volume(self._output, min(VOL_MAX, st["volume"] + 1))
+        await self._client.set_volume(self._output, min(self._vol_max, st["volume"] + self._vol_step))
         await self.coordinator.async_request_refresh()
 
     async def async_volume_down(self) -> None:
         st = self._state()
         if not st or st.get("volume") is None:
             return
-        await self._client.set_volume(self._output, max(VOL_MIN, st["volume"] - 1))
+        await self._client.set_volume(self._output, max(VOL_MIN, st["volume"] - self._vol_step))
         await self.coordinator.async_request_refresh()
 
     @property

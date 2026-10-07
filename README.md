@@ -90,6 +90,7 @@ After install, **Configure** the integration to tweak:
 |---|---|---|
 | Number of outputs | 16 | Reduce if your unit is the 8-output variant. |
 | Poll interval (seconds) | 10 | Lower = snappier UI but more UDP traffic. The full state takes ~1.5s to fetch, so don't go below 3s. |
+| Volume scale | Auto-detected | `0-25` for the AVM-16S1-B, `0-100` for the C4-16ZAMSV3-B. Detected on first setup; if 100% in Home Assistant is quieter than the front panel allows, set this to `0-100`. |
 
 ## Wire protocol (for the curious / for porting)
 
@@ -106,7 +107,7 @@ Numbers: 2-digit lowercase hex; outputs/inputs 1..16 = 01..10
 | Function | Command | Range |
 |---|---|---|
 | Route | `c4.asw.out <out> <in>` (set) / `c4.asw.in <out>` (get) | input `00` disconnects, `01..10` selects |
-| Volume | `c4.asw.vol <out> <v>` | `00..19` (0..25) |
+| Volume | `c4.asw.vol <out> <v>` | `00..19` (0..25) on AVM-16S1-B, `00..64` (0..100) on C4-16ZAMSV3-B |
 | Mute | `c4.asw.mute <out> <m>` | `00` off, `01` on |
 | Bass | `c4.asw.bass <out> <v>` | `00..0c` (0..12), centre `06` |
 | Treble | `c4.asw.treble <out> <v>` | `00..0c` (0..12), centre `06` |

@@ -15,10 +15,13 @@ from .avm_client import Avm16Client, AvmError
 from .const import (
     CONF_OUTPUT_COUNT,
     CONF_POLL_INTERVAL,
+    CONF_VOLUME_MAX,
     DEFAULT_OUTPUT_COUNT,
     DEFAULT_POLL_INTERVAL,
     DEFAULT_PORT,
     DOMAIN,
+    VOL_MAX_CHOICES,
+    VOL_MAX_LEGACY,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -94,6 +97,10 @@ class AvmOptionsFlow(OptionsFlow):
                         CONF_POLL_INTERVAL,
                         default=opts.get(CONF_POLL_INTERVAL, DEFAULT_POLL_INTERVAL),
                     ): vol.All(int, vol.Range(min=2, max=300)),
+                    vol.Optional(
+                        CONF_VOLUME_MAX,
+                        default=int(opts.get(CONF_VOLUME_MAX, VOL_MAX_LEGACY)),
+                    ): vol.In(VOL_MAX_CHOICES),
                 }
             ),
         )

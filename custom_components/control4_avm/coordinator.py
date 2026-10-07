@@ -9,7 +9,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .avm_client import Avm16Client, AvmError
-from .const import DEFAULT_OUTPUT_COUNT, DEFAULT_POLL_INTERVAL, DOMAIN
+from .const import DEFAULT_OUTPUT_COUNT, DEFAULT_POLL_INTERVAL, DOMAIN, VOL_MAX_LEGACY
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -24,6 +24,7 @@ class AvmCoordinator(DataUpdateCoordinator):
         client: Avm16Client,
         output_count: int = DEFAULT_OUTPUT_COUNT,
         poll_interval: int = DEFAULT_POLL_INTERVAL,
+        volume_max: int = VOL_MAX_LEGACY,
     ) -> None:
         super().__init__(
             hass,
@@ -34,6 +35,7 @@ class AvmCoordinator(DataUpdateCoordinator):
         self.client = client
         self.entry = entry
         self.output_count = output_count
+        self.volume_max = volume_max
 
     async def _async_update_data(self) -> dict[int, dict]:
         try:

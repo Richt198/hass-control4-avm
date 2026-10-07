@@ -21,9 +21,11 @@
     "step": {
       "init": {
         "title": "Control4 AVM options",
+        "description": "Set the volume scale to match your matrix. The AVM-16S1-B uses 0-25 and the C4-16ZAMSV3-B uses 0-100. If 100% in Home Assistant is quieter than the matrix front panel allows, choose 0-100.",
         "data": {
           "output_count": "Number of outputs",
-          "poll_interval": "State poll interval (seconds)"
+          "poll_interval": "State poll interval (seconds)",
+          "volume_max": "Volume scale (matrix model)"
         }
       }
     }

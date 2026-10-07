@@ -16,11 +16,14 @@ from .const import (
     ATTR_OUTPUT,
     CONF_OUTPUT_COUNT,
     CONF_POLL_INTERVAL,
+    CONF_VOLUME_MAX,
     DEFAULT_OUTPUT_COUNT,
     DEFAULT_POLL_INTERVAL,
     DEFAULT_PORT,
     DOMAIN,
     SERVICE_SET_ROUTE,
+    VOL_MAX_LEGACY,
+    VOL_MAX_WIDE,
 )
 from .coordinator import AvmCoordinator
 
@@ -52,6 +55,18 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     coordinator = AvmCoordinator(hass, entry, client, output_count, poll_interval)
     await coordinator.async_config_entry_first_refresh()
 
+    if CONF_VOLUME_MAX in entry.options:
+        coordinator.volume_max = int(entry.options[CONF_VOLUME_MAX])
+    else:
+        # First run (or upgrade from 0.2.x): any output above 25 means the
+        # matrix uses the 0..100 scale. Persist the result so it shows in the
+        # options form; the update listener isn't registered yet, so no reload.
+        coordinator.volume_max = _detect_volume_max(coordinator.data)
+        hass.config_entries.async_update_entry(
+            entry, options={**entry.options, CONF_VOLUME_MAX: coordinator.volume_max}
+        )
+        _LOGGER.info("Detected volume scale 0-%d for %s", coordinator.volume_max, host)
+
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
         "client": client,
         "coordinator": coordinator,
@@ -78,6 +93,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     entry.async_on_unload(entry.add_update_listener(_async_options_updated))
     return True
+
+
+def _detect_volume_max(data: dict[int, dict] | None) -> int:
+    volumes = [st.get("volume") for st in (data or {}).values()]
+    if any(v is not None and v > VOL_MAX_LEGACY for v in volumes):
+        return VOL_MAX_WIDE
+    return VOL_MAX_LEGACY
 
 
 async def _async_options_updated(hass: HomeAssistant, entry: ConfigEntry) -> None:
