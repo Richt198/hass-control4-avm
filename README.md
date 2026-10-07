@@ -24,6 +24,7 @@ The official Control4 integration requires a dealer-provisioned cloud account an
 | Model | Status |
 |---|---|
 | Control4 AVM-16S1-B | ✅ Verified end-to-end (capture + ABI probe) |
+| Control4 C4-16ZAMSV3-B | ⚠️ Reported working. Uses a 0-100 volume scale, supported from v0.3.0 (see [issue #1](https://github.com/Richt198/hass-control4-avm/issues/1)) |
 | Other Control4 "AVSwitch IP" family devices | Untested but likely compatible (same `c4.asw.*` command set) |
 | Triad AMS-16 / AMS-8 | ❌ Different protocol — use a different integration |
 
@@ -32,7 +33,7 @@ The official Control4 integration requires a dealer-provisioned cloud account an
 ### HACS (recommended)
 
 1. In Home Assistant: **HACS → ⋮ (top-right) → Custom repositories**.
-2. Repository URL: `https://github.com/<your-user>/<this-repo>` · Category: **Integration**.
+2. Repository URL: `https://github.com/Richt198/hass-control4-avm` · Category: **Integration**.
 3. Install **Control4 AVM-16S1-B Audio Matrix**.
 4. **Settings → System → Restart Home Assistant**.
 5. **Settings → Devices & Services → Add Integration → "Control4 AVM-16S1-B"** → enter the matrix's IP.
@@ -41,10 +42,34 @@ The official Control4 integration requires a dealer-provisioned cloud account an
 
 ```bash
 cd /config
-git clone https://github.com/<your-user>/<this-repo>.git /tmp/control4_avm
+git clone https://github.com/Richt198/hass-control4-avm.git /tmp/control4_avm
 cp -r /tmp/control4_avm/custom_components/control4_avm custom_components/
 ```
 Then restart HA and add the integration.
+
+## Updating and choosing a version
+
+Releases are listed on the [Releases page](https://github.com/Richt198/hass-control4-avm/releases). Each one says what changed and whether any settings need checking afterwards.
+
+### Stable updates
+
+When a new stable release is published, HACS shows it as an update under **Settings → Updates**. Install it, then restart Home Assistant. The new code is not loaded until the restart.
+
+### Trying a beta (pre-release)
+
+Fixes are published as pre-releases first (for example `v0.3.0-beta.1`) so they can be tested before everyone receives them. HACS hides pre-releases unless you opt in:
+
+1. **Settings → Devices & services → HACS**, open the **Control4 AVM-16S1-B Audio Matrix** device.
+2. Enable the **Pre-release** entity (it is disabled by default), then switch it on.
+3. HACS now offers the beta as an update. Install it and restart Home Assistant.
+
+Alternatively, in **HACS → Control4 AVM-16S1-B Audio Matrix → ⋮ → Redownload**, choose a specific version from the list.
+
+If you test a beta, please comment on the related issue to say whether it worked.
+
+### Rolling back
+
+**HACS → Control4 AVM-16S1-B Audio Matrix → ⋮ → Redownload**, pick the previous version (for example `v0.2.0`), then restart Home Assistant. Switch the **Pre-release** entity off again if you no longer want beta updates.
 
 ## What you get
 
