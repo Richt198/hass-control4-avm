@@ -26,6 +26,7 @@ BALANCE_MIN, BALANCE_MAX, BALANCE_CENTER = 0, 50, 25  # 0=full left, 50=full rig
 
 CONF_OUTPUT_COUNT = "output_count"
 CONF_INPUT_COUNT = "input_count"
+CONF_INPUT_NAMES = "input_names"
 CONF_POLL_INTERVAL = "poll_interval"
 CONF_VOLUME_MAX = "volume_max"
 

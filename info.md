@@ -8,6 +8,7 @@ Local Home Assistant control of the Control4 AVM-16S1-B 16x16 audio matrix.
 - 16 `select` entities for direct source picking
 - 48 `number` entities (bass/treble/balance × 16 outputs)
 - A `control4_avm.set_route` service for automations
+- Optional input names, set during setup — your source lists say "Sonos" instead of "Input 3"
 
 ## Local-only
 
@@ -15,4 +16,4 @@ No cloud, no Control4 dealer account, no controller required. The integration sp
 
 ## After install
 
-Restart HA, then add the integration via **Settings → Devices & Services → Add Integration**, and enter the matrix's IP address.
+Restart HA, then add the integration via **Settings → Devices & Services → Add Integration**, and enter the matrix's IP address plus (optionally) comma-separated names for its inputs.

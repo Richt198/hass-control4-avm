@@ -7,12 +7,13 @@ from homeassistant.components.select import SelectEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .avm_client import Avm16Client
-from .const import DEFAULT_INPUT_COUNT, DISCONNECTED_LABEL, DOMAIN
+from .const import DISCONNECTED_LABEL, DOMAIN
 from .coordinator import AvmCoordinator
 
 _LOGGER = logging.getLogger(__name__)
@@ -49,9 +50,7 @@ class AvmRouteSelect(CoordinatorEntity[AvmCoordinator], SelectEntity):
         self._output = output
         self._attr_unique_id = f"{entry.entry_id}_route_out{output}"
         self._attr_name = f"Output {output} source"
-        self._attr_options = [DISCONNECTED_LABEL] + [
-            f"Input {i}" for i in range(1, DEFAULT_INPUT_COUNT + 1)
-        ]
+        self._attr_options = [DISCONNECTED_LABEL] + coordinator.input_labels
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, entry.entry_id)},
             name=f"AVM-16S1-B ({entry.data[CONF_HOST]})",
@@ -67,12 +66,15 @@ class AvmRouteSelect(CoordinatorEntity[AvmCoordinator], SelectEntity):
         route = state["route"]
         if route == 0:
             return DISCONNECTED_LABEL
-        return f"Input {route}"
+        return self.coordinator.input_label(route)
 
     async def async_select_option(self, option: str) -> None:
         if option == DISCONNECTED_LABEL:
             input_ = 0
         else:
-            input_ = int(option.removeprefix("Input ").strip())
+            resolved = self.coordinator.input_for_label(option)
+            if resolved is None:
+                raise HomeAssistantError(f"Unknown source: {option}")
+            input_ = resolved
         await self._client.set_route(self._output, input_)
         await self.coordinator.async_request_refresh()
