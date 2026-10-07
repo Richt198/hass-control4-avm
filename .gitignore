@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.DS_Store
+.vscode/
+.idea/
+
+# Local development artefacts — not part of the published integration
+dev/
+*.tar.gz
+*.pcapng

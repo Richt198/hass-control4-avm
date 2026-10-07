@@ -3,11 +3,11 @@
   "name": "Control4 AVM-16S1-B Audio Matrix",
   "version": "0.2.0",
   "config_flow": true,
-  "documentation": "https://github.com/richt198/control4_avm",
-  "issue_tracker": "https://github.com/richt198/control4_avm/issues",
+  "documentation": "https://github.com/Richt198/hass-control4-avm",
+  "issue_tracker": "https://github.com/Richt198/hass-control4-avm/issues",
   "iot_class": "local_polling",
   "integration_type": "device",
-  "codeowners": [],
+  "codeowners": ["@Richt198"],
   "dependencies": [],
   "requirements": []
 }
